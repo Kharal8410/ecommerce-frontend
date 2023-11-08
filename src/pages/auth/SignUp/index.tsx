@@ -2,24 +2,20 @@
 import { Container, TextField, Button } from "@mui/material";
 import { useState } from "react";
 import { Form, Row, Col } from "react-bootstrap";
-import {
-  errorToast,
-  successToast,
-  warningToast,
-} from "../../../services/toaster.service";
-import axios from "axios";
+import { successToast, warningToast } from "../../../services/toaster.service";
+
 import { useNavigate } from "react-router-dom";
+import { postData } from "../../../services/axios.service";
 
 const SignUp = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  // const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
 
-  const registerSubmitHandeler = async (e: any) => {
+  const registerSubmitHandler = async (e: any) => {
     e.preventDefault();
     if (password !== confirmPassword) {
       warningToast("Password And Confirm Password Must Be Same");
@@ -29,34 +25,34 @@ const SignUp = () => {
         password,
         email,
       };
-      try {
-        const response = await axios.post(
-          "http://localhost:8080/api/v1/auth/register",
-          data
-        );
-        if (response.data.status) {
-          navigate("/");
-          successToast(response.data.message);
-        }
-      } catch (error: any) {
-        errorToast(error.response.data.error);
+      const response = await postData("/auth/register", data);
+      if (response.status) {
+        navigate("/");
+        successToast(response.message);
       }
     }
   };
 
   return (
-    
-     <Container className="d-flex gap-5 justify-content-center p-2 align-items-center">
-       <img
-          src="https://images.unsplash.com/photo-1563013544-824ae1b704d3?auto=format&fit=crop&q=80&w=2070&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-          className="  w-25 rounded"
-          alt=""
-        />
-      
-        <Row className="d-flex w-50">
-          <Col xs={12} md={12} className="my-auto">
+    <div className="d-flex justify-content-center align-items-center full-height p-5">
+      <Container
+        className="p-3"
+        style={{
+          backgroundColor: "lightbrown",
+          boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+        }}
+      >
+        <Row className="d-flex w-100">
+          <Col xs={12} md={6} className="d-flex justify-content-center">
+            <img
+              src="https://images.unsplash.com/photo-1573495628363-04667cedc587?auto=format&fit=crop&q=80&w=1888&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+              className="w-75 rounded"
+              alt=""
+            />
+          </Col>
+          <Col xs={12} md={6} className="my-auto">
             <h1>Sign Up</h1>
-            <Form onSubmit={registerSubmitHandeler}>
+            <Form onSubmit={registerSubmitHandler}>
               <TextField
                 id="name"
                 label="Name"
@@ -87,36 +83,36 @@ const SignUp = () => {
                 fullWidth
                 variant="standard"
                 placeholder="Enter Password Here"
-                autoFocus
+                type="password"
                 onChange={(e) => setPassword(e.target.value)}
               />
               <TextField
-                id="conformPassword"
-                label="Conform Password"
+                id="confirmPassword"
+                label="Confirm Password"
                 className="mb-4"
                 required
                 fullWidth
                 variant="standard"
-                placeholder="Conform Your Password"
-                autoFocus
+                placeholder="Confirm Your Password"
+                type="password"
                 onChange={(e) => setConfirmPassword(e.target.value)}
               />
-              <Button type="submit" variant="contained" fullWidth>
+              <Button
+                type="submit"
+                variant="contained"
+                fullWidth
+                className="mb-2"
+              >
                 Sign Up
               </Button>
               <p>
-                Already have an account? <a href="../">Login</a>{" "}
+                Already have an account? <a href="../">Login</a>
               </p>
             </Form>
           </Col>
         </Row>
-      
-      
-       
-      
-     </Container>
-      
-    
+      </Container>
+    </div>
   );
 };
 

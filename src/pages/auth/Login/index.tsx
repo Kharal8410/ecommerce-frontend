@@ -1,75 +1,103 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button, Container, TextField } from "@mui/material";
-import { Form } from "react-bootstrap";
-import { useState } from "react";
-import axios from "axios";
-import { errorToast, successToast } from "../../../services/toaster.service";
+import { Col, Form, Row } from "react-bootstrap";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { string, object } from "yup";
+import { AuthInterface } from "../../../interface/auth.interface";
+import { successToast } from "../../../services/toaster.service";
+import { Formik } from "formik";
+import { postData } from "../../../services/axios.service";
+import { login } from "../../../slice/authSlice";
+
 
 const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const initialValues = {
+    email: "",
+    password: "",
+  };
+  const dispatch = useDispatch();
 
   const navigate = useNavigate();
 
-  const loginSubmitHandeler = async (e: any) => {
-    e.preventDefault();
-    if (e.target.name === "email") {
-      setEmail(e.target.value);
-    } else if (e.target.name === "password") {
-      setPassword(e.target.value);
-    }
-
-    const data = {
-      email,
-      password,
-    };
-    try {
-      const response = await axios.post(
-        "http://localhost:8080/api/v1/auth/login",
-        data
-      );
-      if (response.data.status) {
-        navigate("/dashboard");
-        successToast(response.data.message);
-      }
-    } catch (error: any) {
-      errorToast(error.response.data.error);
+  const authValidationSchema = object({
+    email: string().email().required("Email is a required field"),
+    password: string()
+      .min(8, "Minimum length of password should be 8")
+      .required("Password is a required field."),
+  });
+  const loginHandler = async (values: AuthInterface) => {
+    const resp = await postData("/auth/login", values);
+    if (resp.status === "success") {
+      const data = {
+        jwt: resp.token,
+        role: resp.authData.role,
+        email: resp.authData.email,
+      };
+      dispatch(login(data));
+      navigate("/products");
+      successToast("User logged in successfully");
     }
   };
 
   return (
-    <Container>
-      <h1>Login</h1>
-      <Form onSubmit={loginSubmitHandeler}>
-        <TextField
-          id="email"
-          label="Email"
-          className="mb-4"
-          required
-          fullWidth
-          variant="standard"
-          placeholder="Enter Email Here"
-          autoFocus
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <TextField
-          id="password"
-          label="Password"
-          className="mb-4"
-          required
-          fullWidth
-          variant="standard"
-          placeholder="Enter Password Here"
-          autoFocus
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <Button type="submit" variant="contained" fullWidth>
-          Login
-        </Button>
-        <p>Don't have an account? <a href="../SignUp">Signup</a> </p>
-      </Form>
+    <div className="d-flex justify-content-center align-items-center full-height">
+      <Container className="p-3" style={{ backgroundColor: "lightbrown", boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)" }}>
+      <Row className="d-flex justify-content-center">
+        <Col xs={12} md={6}>
+          <h1>Login</h1>
+          <Formik
+            initialValues={initialValues}
+            validationSchema={authValidationSchema}
+            onSubmit={loginHandler}
+          >
+            {({ handleChange, handleSubmit, errors, touched, handleBlur }) => (
+              <Form onSubmit={handleSubmit}>
+                <div className="mb-4">
+                  <TextField
+                    id="email"
+                    label="Email"
+                    required
+                    fullWidth
+                    onBlur={handleBlur}
+                    variant="standard"
+                    placeholder="Enter Email Here"
+                    autoFocus
+                    onChange={handleChange}
+                  />
+                  <span className="text-danger">
+                    {touched.email && errors.email}
+                  </span>
+                </div>
+                <div className="mb-4">
+                  <TextField
+                    id="password"
+                    label="Password"
+                    required
+                    fullWidth
+                    onBlur={handleBlur}
+                    variant="standard"
+                    placeholder="Enter Password Here"
+                    autoFocus
+                    onChange={handleChange}
+                  />
+                  <span className="text-danger">
+                    {touched.password && errors.password}
+                  </span>
+                </div>
+                <Button type="submit" variant="contained" fullWidth>
+                  Login
+                </Button>
+                <p>
+                  Don't have an account? <a href="../SignUp">Signup</a>
+                </p>
+              </Form>
+            )}
+          </Formik>
+        </Col>
+      </Row>
     </Container>
+    </div>
   );
 };
 
