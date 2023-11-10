@@ -6,7 +6,7 @@ import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
-import { Col, Row } from "react-bootstrap";
+import { Col, Row, Form, Image } from "react-bootstrap";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import ButtonSpinner from "../../Loader/Spinnner";
 
@@ -17,11 +17,25 @@ export default function ProductFormModel({
   handleChange,
   handleSubmit,
   isSpinning,
+  edit,
+  product,
+  handleUpdate,
 }: any) {
   return (
     <Dialog open={open} onClose={handleClose}>
-      <DialogTitle>Add Product Form</DialogTitle>
+      <DialogTitle>
+        {edit ? "Update Product Form" : "Add Product Form"}
+      </DialogTitle>
       <DialogContent>
+        {edit && (
+          <Row className="mb-2">
+            <Col md={6}>
+              <Form.Label>Product Image</Form.Label>
+              <br />
+              <Image src={product.productImage} width={"100"} height={"100"} />
+            </Col>
+          </Row>
+        )}
         <Row>
           <Col>
             <TextField
@@ -35,6 +49,7 @@ export default function ProductFormModel({
               variant="standard"
               required
               onChange={handleChange}
+              value={product.name}
             />
           </Col>
           <Col>
@@ -49,6 +64,7 @@ export default function ProductFormModel({
               variant="standard"
               required
               onChange={handleChange}
+              value={product.brand}
             />
           </Col>
         </Row>
@@ -65,6 +81,7 @@ export default function ProductFormModel({
               variant="standard"
               required
               onChange={handleChange}
+              value={product.price}
             />
           </Col>
           <Col>
@@ -79,6 +96,7 @@ export default function ProductFormModel({
               variant="standard"
               required
               onChange={handleChange}
+              value={product.countInStock}
             />
           </Col>
         </Row>
@@ -91,6 +109,7 @@ export default function ProductFormModel({
                 name="category"
                 required
                 onChange={handleChange}
+                value={product.category}
               >
                 {catogeries.map((category: any) => {
                   return (
@@ -114,28 +133,36 @@ export default function ProductFormModel({
               variant="standard"
               required
               onChange={handleChange}
+              value={product.description}
             />
           </Col>
         </Row>
-        <Row>
-          <Col>
-            <TextField
-              type="file"
-              margin="normal"
-              id="file"
-              name="productImage"
-              fullWidth
-              variant="standard"
-              required
-              onChange={handleChange}
-            />
-          </Col>
-        </Row>
+        {!edit && (
+          <Row>
+            <Col>
+              <TextField
+                type="file"
+                margin="normal"
+                id="file"
+                name="productImage"
+                fullWidth
+                variant="standard"
+                required
+                onChange={handleChange}
+                // value={product.description}
+              />
+            </Col>
+          </Row>
+        )}
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>Cancel</Button>
-        <Button variant="outlined" disabled={isSpinning} onClick={handleSubmit}>
-          {isSpinning ? <ButtonSpinner /> : "Submit"}
+        <Button
+          variant="outlined"
+          disabled={isSpinning}
+          onClick={edit ? handleUpdate : handleSubmit}
+        >
+          {isSpinning ? <ButtonSpinner /> : edit ? "update" : "Submit"}
         </Button>
       </DialogActions>
     </Dialog>

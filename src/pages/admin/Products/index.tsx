@@ -8,7 +8,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { useEffect, useState } from "react";
-import { getData } from "../../../services/axios.service";
+import { getData, updateData } from "../../../services/axios.service";
 import Loader from "../../../components/Loader";
 import { FaEdit } from "react-icons/fa";
 import { AiFillDelete } from "react-icons/ai";
@@ -20,6 +20,7 @@ import { config } from "../../../config";
 import { useSelector } from "react-redux";
 import { Container } from "@mui/material";
 import ProductFormModel from "../../../components/admin/forms/ProductFormModal";
+import NavbarComponent from "../../../components/Navbar";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -44,7 +45,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 const Products = () => {
   const [products, setProducts] = useState<any>({});
   const [isSpinning, setIsSpinning] = useState(false);
-  const [product, setProduct] = useState({
+  const [product, setProduct] = useState<any>({
     name: "",
     brand: "",
     price: "",
@@ -57,6 +58,7 @@ const Products = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const [open, setOpen] = useState(false);
+  const [edit, setEdit] = useState(false);
 
   const { jwt } = useSelector((state: any) => state.auth);
 
@@ -95,17 +97,15 @@ const Products = () => {
     getProducts();
   }, []);
 
- 
-  const handleChange=(e: any)=>{
-    if(e.target.name=== "productImage"){
-      setProduct((prev)=>{
-      return{...prev,[e.target.name]:e.target.files[0]}
-    });
-
-    }else{
-      setProduct((prev)=>{
-      return{...prev,[e.target.name]:e.target.value}
-    });
+  const handleChange = (e: any) => {
+    if (e.target.name === "productImage") {
+      setProduct((prev: any) => {
+        return { ...prev, [e.target.name]: e.target.files[0] };
+      });
+    } else {
+      setProduct((prev: any) => {
+        return { ...prev, [e.target.name]: e.target.value };
+      });
     }
   };
   const handleSubmit = async (e: any) => {
@@ -144,14 +144,55 @@ const Products = () => {
       setIsSpinning(false);
     }
   };
+  const handleUpdate = async (e: any) => {
+    e.preventDefault();
 
+    const resp = await updateData(`/product/${product.id}`, product, jwt);
 
-   const handleClickOpen = () => {
+    if (resp.status === "success") {
+      const updatedProd = products.results.map((prod: any) => {
+        return prod.id === product.id ? resp.data : prod;
+      });
+      setProducts((prev: any) => {
+        return { ...prev, results: updatedProd };
+      });
+      setOpen(false);
+      setEdit(false);
+    }
+  };
+
+  const handleClickOpen = () => {
     setOpen(true);
   };
 
   const handleClose = () => {
     setOpen(false);
+    setEdit(false);
+    setProduct({
+      name: "",
+      brand: "",
+      price: "",
+      description: "",
+      category: "",
+      productImage: "",
+      countInStock: "",
+    });
+  };
+
+  interface ProductInterface {
+    name: string;
+    brand: string;
+    category: string;
+    price: string;
+    description: string;
+    productImage: string;
+    countInStock: string;
+  }
+
+  const editProduct = (product: ProductInterface) => {
+    setOpen(true);
+    setEdit(true);
+    setProduct(product);
   };
   return (
     <TableContainer component={Paper}>
@@ -159,6 +200,7 @@ const Products = () => {
         <Loader />
       ) : (
         <Container>
+          <NavbarComponent />
           <Button
             variant="outline-primary"
             className="m-3"
@@ -206,7 +248,10 @@ const Products = () => {
                         {moment(product.createdAt).format("YYYY-MM-DD")}
                       </StyledTableCell>
                       <StyledTableCell align="right">
-                        <Button variant="outline-primary">
+                        <Button
+                          variant="outline-primary"
+                          onClick={(e) => editProduct(product)}
+                        >
                           <FaEdit />
                         </Button>
                         <Button
@@ -230,6 +275,9 @@ const Products = () => {
             handleChange={handleChange}
             handleSubmit={handleSubmit}
             isSpinning={isSpinning}
+            edit={edit}
+            product={product}
+            handleUpdate={handleUpdate}
           />
         </Container>
       )}

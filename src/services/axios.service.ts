@@ -20,3 +20,20 @@ export const getData = async (url: string) => {
         errorToast(error.response.data.error);
     }
 }
+
+export const updateData = async (url: string, data: any, jwt: string) => {
+    try {
+        const response = await axios.put(
+            `${config.SERVER_URL}${url}`,
+            data,
+            {
+                headers: {
+                    Authorization: `Bearer ${jwt}`,
+                },
+            }
+        );
+        return response.data;
+    } catch (error: any) {
+        errorToast(error.response.data.error);
+    }
+}
