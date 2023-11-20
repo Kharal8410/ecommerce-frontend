@@ -6,6 +6,8 @@ import { successToast, warningToast } from "../../../services/toaster.service";
 
 import { useNavigate } from "react-router-dom";
 import { postData } from "../../../services/axios.service";
+import { FcGoogle } from "react-icons/fc";
+import { FaGithubSquare } from "react-icons/fa";
 
 const SignUp = () => {
   const [name, setName] = useState("");
@@ -36,7 +38,7 @@ const SignUp = () => {
   return (
     <div className="d-flex justify-content-center align-items-center full-height p-5">
       <Container
-        className="p-3"
+        className="p-3 w-50"
         style={{
           backgroundColor: "lightbrown",
           boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
@@ -51,7 +53,7 @@ const SignUp = () => {
             />
           </Col>
           <Col xs={12} md={6} className="my-auto">
-            <h1>Sign Up</h1>
+            <h1 className="text-center">Sign Up</h1>
             <Form onSubmit={registerSubmitHandler}>
               <TextField
                 id="name"
@@ -105,9 +107,39 @@ const SignUp = () => {
               >
                 Sign Up
               </Button>
-              <p>
-                Already have an account? <a href="../">Login</a>
+              <p className="mt-2 text-center">
+                Already have an account?{" "}
+                <a style={{ textDecoration: "none" }} href="../">
+                  Login
+                </a>
               </p>
+              <Button
+                type="submit"
+                variant="contained"
+                style={{
+                  backgroundColor: "red",
+                  color: "white",
+                  textTransform: "none",
+                }}
+                fullWidth
+              >
+                <FcGoogle />
+                Continue with google
+              </Button>
+              <Button
+                type="submit"
+                variant="contained"
+                fullWidth
+                className="mt-2"
+                style={{
+                  backgroundColor: "black",
+                  color: "white",
+                  textTransform: "none",
+                }}
+              >
+                <FaGithubSquare />
+                Continue with github
+              </Button>
             </Form>
           </Col>
         </Row>
