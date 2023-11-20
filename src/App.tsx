@@ -8,6 +8,7 @@ import Products from "./pages/admin/Products";
 import SecureRoute from "./routes/SecureRoute";
 import UserProducts from "./pages/users/Products";
 import AdminRoute from "./routes/AdminRoute";
+import ProductDetail from "./components/user/ProductDetail";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
             <Route path="/products" element={<Products />} />
           </Route>
           <Route path="/all/products" element={<UserProducts />} />
+          <Route path="/products/:productId" element={<ProductDetail />} />
         </Route>
         <Route path="*" element={<PageNotFound />} />
       </Routes>

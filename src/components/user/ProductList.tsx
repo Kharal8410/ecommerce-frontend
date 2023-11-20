@@ -13,8 +13,10 @@ import { red } from "@mui/material/colors";
 import moment from "moment";
 import { AiFillEye, AiOutlineShoppingCart } from "react-icons/ai";
 import { Rating } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 const ProductList = ({ product }: any) => {
+  const navigate = useNavigate();
   return (
     <Card sx={{ maxWidth: 345, marginBottom: "2rem" }}>
       <CardHeader
@@ -53,7 +55,10 @@ const ProductList = ({ product }: any) => {
       </CardContent>
       <CardActions disableSpacing>
         {/* <IconButton aria-label="add to favorites">Cart</IconButton> */}
-        <IconButton aria-label="share">
+        <IconButton
+          aria-label="share"
+          onClick={(e) => navigate(`/products/${product.id}`)}
+        >
           <AiFillEye />
         </IconButton>
       </CardActions>
