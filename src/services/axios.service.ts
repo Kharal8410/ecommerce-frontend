@@ -20,6 +20,16 @@ export const getData = async (url: string) => {
         errorToast(error.response.data.error);
     }
 }
+export const getDataWithParams = async (url: string, filters: any) => {
+    try {
+        const resp = await axios.get(`${config.SERVER_URL}${url}`, {
+            params: { ...filters }
+        });
+        return resp.data;
+    } catch (error: any) {
+        errorToast(error.response.data.error);
+    }
+}
 
 export const updateData = async (url: string, data: any, jwt: string) => {
     try {

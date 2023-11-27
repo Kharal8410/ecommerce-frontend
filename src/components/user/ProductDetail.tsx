@@ -1,17 +1,24 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { getData } from "../../services/axios.service";
 import Loader from "../Loader";
 import NavbarComponent from "../Navbar";
 import { Col, Image, ListGroup, Row } from "react-bootstrap";
 import { Button, InputLabel, MenuItem, Rating, Select } from "@mui/material";
 import FormControl from "@mui/material/FormControl";
+import { useDispatch } from "react-redux";
+import { addToCart } from "../../slice/productSlice";
+import { successToast } from "../../services/toaster.service";
 
 const ProductDetail = () => {
   const [product, setProduct] = useState<any>({});
   const [isLoading, setIsLoading] = useState(false);
   const { productId } = useParams();
+  const [qty, setQty] = useState("");
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
     // /product/id
@@ -23,6 +30,24 @@ const ProductDetail = () => {
     };
     getProductById();
   }, []);
+
+  const handleAddToCart = (quantity: any) => {
+    const data: any = payloadForCartItem(product.data, quantity);
+    dispatch(addToCart(data));
+    navigate("/cart");
+    successToast(data.productName + "added to cart successfully");
+  };
+
+  const payloadForCartItem = (data: any, qty: any) => {
+    return {
+      productId: data.id,
+      productName: data.name,
+      productImage: data.productImage,
+      price: data.price,
+      qty,
+      countInStock: data.countInStock,
+    };
+  };
   return (
     <>
       <NavbarComponent />
@@ -96,7 +121,8 @@ const ProductDetail = () => {
                               Choose Quantity
                             </InputLabel>
                             <Select
-                              value=""
+                              onChange={(e) => setQty(e.target.value)}
+                              value={qty}
                               label="Choose quantity"
                               labelId="demo-simple-select-filled-label"
                               id="demo-simple-select-filled"
@@ -120,6 +146,7 @@ const ProductDetail = () => {
                         variant="contained"
                         fullWidth
                         disabled={product.data.countInStock == 0}
+                        onClick={() => handleAddToCart(qty)}
                       >
                         Add to cart
                       </Button>

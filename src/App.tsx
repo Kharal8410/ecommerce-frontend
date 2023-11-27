@@ -9,6 +9,7 @@ import SecureRoute from "./routes/SecureRoute";
 import UserProducts from "./pages/users/Products";
 import AdminRoute from "./routes/AdminRoute";
 import ProductDetail from "./components/user/ProductDetail";
+import Cart from "./components/user/Cart";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
             <Route path="/products" element={<Products />} />
           </Route>
           <Route path="/all/products" element={<UserProducts />} />
+          <Route path="/cart" element={<Cart />} />
           <Route path="/products/:productId" element={<ProductDetail />} />
         </Route>
         <Route path="*" element={<PageNotFound />} />
