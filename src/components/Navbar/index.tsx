@@ -9,6 +9,8 @@ import { BsFillCartCheckFill } from "react-icons/bs";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../slice/authSlice";
 import { successToast } from "../../services/toaster.service";
+import { resetCart } from "../../slice/productSlice";
+import { resetOrder } from "../../slice/orderSlice";
 
 function NavbarComponent() {
   const { name, role } = useSelector((state: any) => state.auth);
@@ -18,6 +20,8 @@ function NavbarComponent() {
   const logoutHandler = () => {
     localStorage.removeItem("persist:root");
     dispatch(logout());
+    dispatch(resetCart());
+    dispatch(resetOrder());
     successToast("Logged out successfully");
   };
   return (
@@ -29,7 +33,12 @@ function NavbarComponent() {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ms-auto">
-            {role === "user" && <BsFillCartCheckFill />}
+            {role === "user" && (
+              <Link to={"/cart"}>
+                <BsFillCartCheckFill />{" "}
+              </Link>
+            )}
+
             <NavDropdown title={name} id="basic-nav-dropdown">
               <Button variant="secondary" className="w-100">
                 Profile

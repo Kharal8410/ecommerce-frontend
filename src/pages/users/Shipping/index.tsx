@@ -3,20 +3,21 @@ import { useState } from "react";
 
 import { Button, Form } from "react-bootstrap";
 import { Container, TextField } from "@mui/material";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setShippingAddress } from "../../../slice/productSlice";
 
 const Shipping = ({ setActiveStep }: any) => {
-  const [shippingData, setShippingData] = useState<any>({
-    address: "",
-    city: "",
-    postalCode: "",
-    country: "",
-  });
+  const shpData = useSelector((state: any) => state.product.shippingAddress);
 
+  const [shippingData, setShippingData] = useState<any>(shpData);
   const dispatch = useDispatch();
 
   function handleChange(e: any) {
+    const data = {
+      ...shippingData,
+      [e.target.name]: e.target.value,
+    };
+    dispatch(setShippingAddress(data));
     setShippingData((prev: any) => {
       return { ...prev, [e.target.name]: e.target.value };
     });
@@ -38,6 +39,7 @@ const Shipping = ({ setActiveStep }: any) => {
             type="text"
             className="mt-2"
             name="address"
+            value={shpData.address}
             onChange={handleChange}
           />
           <TextField
@@ -46,6 +48,7 @@ const Shipping = ({ setActiveStep }: any) => {
             type="text"
             className="mt-2"
             name="city"
+            value={shpData.city}
             onChange={handleChange}
           />
           <TextField
@@ -54,12 +57,14 @@ const Shipping = ({ setActiveStep }: any) => {
             type="number"
             className="mt-2"
             name="postalCode"
+            value={shpData.postalCode}
             onChange={handleChange}
           />
           <TextField
             fullWidth
             label="Enter Country"
             type="text"
+            value={shpData.country}
             className="mt-2"
             name="country"
             onChange={handleChange}

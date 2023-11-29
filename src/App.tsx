@@ -12,6 +12,7 @@ import ProductDetail from "./components/user/ProductDetail";
 import Cart from "./components/user/Cart";
 import CheckoutState from "./context/CheckoutState";
 import ParentContainer from "./pages/users/ParentContainer";
+import Success from "./pages/Success";
 
 function App() {
   return (
@@ -36,6 +37,7 @@ function App() {
           />
 
           <Route path="/products/:productId" element={<ProductDetail />} />
+          <Route path="/payment/success" element={<Success />} />
         </Route>
         <Route path="*" element={<PageNotFound />} />
       </Routes>

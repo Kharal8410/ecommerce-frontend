@@ -31,10 +31,23 @@ const productSlice = createSlice({
     setShippingAddress: (state: any, data: any) => {
       state.shippingAddress = data.payload;
     },
+    addPaymentMethod: (state: any, data: any) => {
+      state.paymentMethod = data.payload;
+    },
+    resetCart: (state: any) => {
+      state.paymentMethod = "";
+      state.shippingAddress = {};
+      state.cartItem = [];
+    },
   },
 });
 
 export default productSlice.reducer;
 
-export const { addToCart, removeFromCart, setShippingAddress } =
-  productSlice.actions;
+export const {
+  addToCart,
+  removeFromCart,
+  setShippingAddress,
+  addPaymentMethod,
+  resetCart,
+} = productSlice.actions;
