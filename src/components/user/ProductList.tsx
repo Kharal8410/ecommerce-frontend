@@ -12,9 +12,11 @@ import moment from "moment";
 import { AiFillEye, AiOutlineShoppingCart } from "react-icons/ai";
 import { Rating } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
-const ProductList = ({ product }: any) => {
+const ProductList = ({ product, addProdToCart, removeProdToCart }: any) => {
   const navigate = useNavigate();
+  const { cartItem } = useSelector((state: any) => state.product);
   return (
     <Card sx={{ maxWidth: 345, marginBottom: "2rem" }}>
       <CardHeader
@@ -24,7 +26,19 @@ const ProductList = ({ product }: any) => {
           </Avatar>
         }
         action={
-          <IconButton aria-label="settings">
+          <IconButton
+            color={
+              cartItem.find((item: any) => item.productId === product.id)
+                ? "success"
+                : "default"
+            }
+            aria-label="settings"
+            onClick={(e) => {
+              cartItem.find((item: any) => item.productId === product.id)
+                ? removeProdToCart(product)
+                : addProdToCart(product);
+            }}
+          >
             <AiOutlineShoppingCart />
           </IconButton>
         }

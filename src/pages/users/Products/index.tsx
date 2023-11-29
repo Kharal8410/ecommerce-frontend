@@ -6,6 +6,10 @@ import { Col, Row } from "react-bootstrap";
 import ProductList from "../../../components/user/ProductList";
 import Loader from "../../../components/Loader";
 import Filter from "../../../components/user/Filter";
+import { payloadForCartItem } from "../../../helpers/product";
+import { successToast } from "../../../services/toaster.service";
+import { addToCart, removeFromCart } from "../../../slice/productSlice";
+import { useDispatch } from "react-redux";
 
 const UserProducts = () => {
   const [products, setProducts] = useState<any>({});
@@ -13,6 +17,8 @@ const UserProducts = () => {
   const [categories, setCategories] = useState<any>([]);
   const [sort, setSort] = useState<any>([]);
   const [filters, setFilters] = useState<any>({});
+
+  const dispatch = useDispatch();
 
   const getProducts = async () => {
     setIsLoading(true);
@@ -50,6 +56,18 @@ const UserProducts = () => {
         });
   };
 
+  const addProdToCart = (product: any) => {
+    const data: any = payloadForCartItem(product, 1);
+    dispatch(addToCart(data));
+
+    successToast(data.productName + " added to cart successfully");
+  };
+  const removeProdToCart = (product: any) => {
+    dispatch(removeFromCart(product.id));
+
+    successToast(product.name + " removed from cart successfully");
+  };
+
   const handleFilters = (key: any, value: any) => {
     if (value !== "") {
       setFilters({ ...filters, [key]: value });
@@ -81,7 +99,11 @@ const UserProducts = () => {
               {products.results.map((product: any) => {
                 return (
                   <Col key={product.id} sm={12} md={6} lg={4} xs={3}>
-                    <ProductList product={product} />
+                    <ProductList
+                      product={product}
+                      addProdToCart={addProdToCart}
+                      removeProdToCart={removeProdToCart}
+                    />
                   </Col>
                 );
               })}

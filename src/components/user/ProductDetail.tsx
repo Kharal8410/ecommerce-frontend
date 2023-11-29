@@ -10,6 +10,7 @@ import FormControl from "@mui/material/FormControl";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../../slice/productSlice";
 import { successToast } from "../../services/toaster.service";
+import { payloadForCartItem } from "../../helpers/product";
 
 const ProductDetail = () => {
   const [product, setProduct] = useState<any>({});
@@ -35,19 +36,9 @@ const ProductDetail = () => {
     const data: any = payloadForCartItem(product.data, quantity);
     dispatch(addToCart(data));
     navigate("/cart");
-    successToast(data.productName + "added to cart successfully");
+    successToast(data.productName + " added to cart successfully");
   };
 
-  const payloadForCartItem = (data: any, qty: any) => {
-    return {
-      productId: data.id,
-      productName: data.name,
-      productImage: data.productImage,
-      price: data.price,
-      qty,
-      countInStock: data.countInStock,
-    };
-  };
   return (
     <>
       <NavbarComponent />
