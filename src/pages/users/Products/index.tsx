@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import NavbarComponent from "../../../components/Navbar";
 import { getData, getDataWithParams } from "../../../services/axios.service";
-import { Col, Row } from "react-bootstrap";
+import { Col } from "react-bootstrap";
 import ProductList from "../../../components/user/ProductList";
 import Loader from "../../../components/Loader";
 import Filter from "../../../components/user/Filter";
@@ -10,6 +10,7 @@ import { payloadForCartItem } from "../../../helpers/product";
 import { successToast } from "../../../services/toaster.service";
 import { addToCart, removeFromCart } from "../../../slice/productSlice";
 import { useDispatch } from "react-redux";
+import { Container } from "@mui/joy";
 
 const UserProducts = () => {
   const [products, setProducts] = useState<any>({});
@@ -85,7 +86,7 @@ const UserProducts = () => {
       ) : (
         <>
           <div className="clearfix mb-3">
-            <span className="float-end">
+            <span className="float-end mt-2">
               <Filter
                 categories={categories}
                 handleSort={handleSort}
@@ -94,21 +95,23 @@ const UserProducts = () => {
               />
             </span>
           </div>
-          {products.status === "success" && (
-            <Row>
-              {products.results.map((product: any) => {
-                return (
-                  <Col key={product.id} sm={12} md={6} lg={4} xs={3}>
-                    <ProductList
-                      product={product}
-                      addProdToCart={addProdToCart}
-                      removeProdToCart={removeProdToCart}
-                    />
-                  </Col>
-                );
-              })}
-            </Row>
-          )}
+          <Container>
+            {products.status === "success" && (
+              <Container className="d-flex flex-wrap ">
+                {products.results.map((product: any) => {
+                  return (
+                    <Col key={product.id} sm={12} md={6} lg={4} xs={3}>
+                      <ProductList
+                        product={product}
+                        addProdToCart={addProdToCart}
+                        removeProdToCart={removeProdToCart}
+                      />
+                    </Col>
+                  );
+                })}
+              </Container>
+            )}
+          </Container>
         </>
       )}
     </>

@@ -13,6 +13,7 @@ import Cart from "./components/user/Cart";
 import CheckoutState from "./context/CheckoutState";
 import ParentContainer from "./pages/users/ParentContainer";
 import Success from "./pages/Success";
+import Profile from "./components/Navbar/Profile";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
           </Route>
           <Route path="/all/products" element={<UserProducts />} />
           <Route path="/cart" element={<Cart />} />
+          <Route path="/profile" element={<Profile />} />
 
           <Route
             path="/checkout-step"

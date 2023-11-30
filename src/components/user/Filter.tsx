@@ -2,7 +2,8 @@
 import * as React from "react";
 import Popover from "@mui/material/Popover";
 import Typography from "@mui/material/Typography";
-import Button from "@mui/material/Button";
+import Button from "@mui/joy/Button";
+import { FaFilter } from "react-icons/fa";
 import {
   Checkbox,
   FormControl,
@@ -30,8 +31,9 @@ const Filter = ({ categories, handleSort, handleFilters, sort }: any) => {
 
   return (
     <div>
-      <Button aria-describedby={id} variant="contained" onClick={handleClick}>
-        Filter
+      <Button aria-describedby={id} color="success" onClick={handleClick}>
+        <FaFilter />
+        <span className="ms-2">Filter</span>
       </Button>
       <Popover
         id={id}

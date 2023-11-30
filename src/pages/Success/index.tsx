@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { useEffect, useState } from "react";
 import NavbarComponent from "../../components/Navbar";
 import { Link } from "react-router-dom";

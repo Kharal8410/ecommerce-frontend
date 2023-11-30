@@ -1,61 +1,47 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import Card from "@mui/material/Card";
+import Card from "@mui/joy/Card";
 import CardHeader from "@mui/material/CardHeader";
 import CardMedia from "@mui/material/CardMedia";
 import CardContent from "@mui/material/CardContent";
-import CardActions from "@mui/material/CardActions";
-import Avatar from "@mui/material/Avatar";
-import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
-import { red } from "@mui/material/colors";
 import moment from "moment";
-import { AiFillEye, AiOutlineShoppingCart } from "react-icons/ai";
 import { Rating } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import CardOverflow from "@mui/joy/CardOverflow";
+import Button from "@mui/joy/Button";
+import { FaCartPlus } from "react-icons/fa";
+import Link from "@mui/joy/Link";
 
 const ProductList = ({ product, addProdToCart, removeProdToCart }: any) => {
   const navigate = useNavigate();
   const { cartItem } = useSelector((state: any) => state.product);
   return (
-    <Card sx={{ maxWidth: 345, marginBottom: "2rem" }}>
-      <CardHeader
-        avatar={
-          <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
-            R
-          </Avatar>
-        }
-        action={
-          <IconButton
-            color={
-              cartItem.find((item: any) => item.productId === product.id)
-                ? "success"
-                : "default"
-            }
-            aria-label="settings"
-            onClick={(e) => {
-              cartItem.find((item: any) => item.productId === product.id)
-                ? removeProdToCart(product)
-                : addProdToCart(product);
-            }}
-          >
-            <AiOutlineShoppingCart />
-          </IconButton>
-        }
-        title={product.name}
-        subheader={moment(product.createdAt).format("lll")}
-      />
+    <Card
+      sx={{ maxWidth: 350, marginBottom: "2rem", backgroundColor: "#90EE90" }}
+    >
       <CardMedia
         component="img"
         height="194"
+        color=""
         image={product.productImage}
         alt={product.name}
       />
+      <Link
+        color="neutral"
+        overlay
+        onClick={(e) => navigate(`/products/${product.id}`)}
+      >
+        <CardHeader
+          title={product.name}
+          subheader={moment(product.createdAt).format("lll")}
+        />
+      </Link>
       <CardContent>
         <Typography variant="body2" color="text.secondary">
-          {product.description}
+          {product.description.slice(0, 35)}
         </Typography>
-        <Typography variant="body2" color="text.secondary">
+        <Typography variant="h6" color="text.warning">
           ${product.price}
         </Typography>
         <Rating
@@ -65,15 +51,23 @@ const ProductList = ({ product, addProdToCart, removeProdToCart }: any) => {
           readOnly
         />
       </CardContent>
-      <CardActions disableSpacing>
-        {/* <IconButton aria-label="add to favorites">Cart</IconButton> */}
-        <IconButton
-          aria-label="share"
-          onClick={(e) => navigate(`/products/${product.id}`)}
+
+      <CardOverflow>
+        <Button
+          variant="solid"
+          color="success"
+          size="lg"
+          onClick={(e) => {
+            cartItem.find((item: any) => item.productId === product.id)
+              ? removeProdToCart(product)
+              : addProdToCart(product);
+          }}
         >
-          <AiFillEye />
-        </IconButton>
-      </CardActions>
+          <FaCartPlus />
+
+          <span className="ms-2">Add to cart</span>
+        </Button>
+      </CardOverflow>
     </Card>
   );
 };
